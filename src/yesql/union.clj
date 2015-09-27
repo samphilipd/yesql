@@ -51,8 +51,9 @@
 (defn union-raw
   "Performs a SQL union using the provided RAW sql-and-params vectors.
    Union is performed in the order in which the arguments appear.
-   An optional string may be provided which will be appended after the UNIONs
-   SQL. For example you may include a LIMIT clause here.
+   An optional jdbc-style vector may be provided which will be appended after
+   the UNIONs SQL. For example you may include a LIMIT clause here such as:
+   [\"LIMIT ?\" 25]
 
    NOTE: You can get hold of a raw sql-and-params vector for a query-fn by
    executing the query as normal but with `-raw` appended to it
@@ -69,5 +70,5 @@
        (str (unionize-sql-strings
              sql-coll
              (get options :union-type "UNION ALL"))
-            (:union-append options))
-       params-coll))))
+            (first (:union-append options)))
+       (concat params-coll (rest (:union-append options)))))))
